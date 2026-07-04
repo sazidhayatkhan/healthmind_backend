@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { EmailAuthStrategy } from './strategies/email.strategy';
 import { AuthStrategyFactory } from './strategies/factory/auth-strategy.factory';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [UsersModule],
