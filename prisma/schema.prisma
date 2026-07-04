@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  moduleFormat    = "cjs"
+}
+
+enum UserRole {
+  ADMIN
+  PATIENT
+  DOCTOR
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model User {
+  id              String   @id @default(cuid())
+
+  email           String   @unique
+  passwordHash    String
+
+  firstName       String
+  lastName        String
+
+  role            UserRole
+  status          UserStatus @default(PENDING)
+
+  emailVerified   Boolean  @default(false)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  patientProfile  PatientProfile?
+  doctorProfile   DoctorProfile?
+}
+
+model PatientProfile {
+
+  id          String   @id @default(cuid())
+
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+
+  dateOfBirth DateTime?
+
+  gender      Gender?
+
+  bloodGroup  String?
+
+  height      Float?
+
+  weight      Float?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DoctorProfile {
+
+  id              String @id @default(cuid())
+
+  userId          String @unique
+  user            User @relation(fields: [userId], references: [id])
+
+  specialization  String
+
+  licenseNumber   String
+
+  experienceYears Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
